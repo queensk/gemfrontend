@@ -26,6 +26,7 @@ function App() {
         <Routes>
           <Route
             index
+            path="/"
             element={
               <RequireAuth redirectTo="../signin">
                 <Home />

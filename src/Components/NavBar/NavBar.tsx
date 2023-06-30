@@ -5,6 +5,10 @@ import logo from "./LOGO.svg";
 import SearchForm from "../SearchForm/SearchForm";
 
 const NavBar: React.FC = () => {
+  const handleLogOut = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
   return (
     <nav>
       <div className="nav_log">
@@ -20,6 +24,7 @@ const NavBar: React.FC = () => {
         <Link to="/profile">Profile</Link>
         <Link to="/buyout">Buyout</Link>
         <Link to="/about">About</Link>
+        <button onClick={handleLogOut}>log out</button>
       </div>
     </nav>
   );

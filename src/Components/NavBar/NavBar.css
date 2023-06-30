@@ -25,3 +25,12 @@ nav .nav_log img {
   color: #10029a;
   height: 100%;
 }
+.Nav_links button {
+  font-size: 1.2rem;
+  padding: 2% 5%;
+  border-radius: 5px;
+  border: none;
+  background-color: #2196f3;
+  color: #fff;
+  cursor: pointer;
+}
