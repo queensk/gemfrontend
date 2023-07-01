@@ -48,7 +48,11 @@ const Stats: React.FC<Props> = ({ likes, followers, user }) => {
       followingID: user.UserID,
     };
     api
-      .post(`/followers`, data)
+      .post(`/followers`, data, {
+        headers: {
+          Authorization: `JWT ${state.token}`,
+        },
+      })
       .then((_res) => {
         setUserFollower(
           userFollower === followers ? userFollower + 1 : userFollower - 1
