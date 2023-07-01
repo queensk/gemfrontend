@@ -29,7 +29,11 @@ const Stats: React.FC<Props> = ({ likes, followers, user }) => {
       likingID: user.UserID,
     };
     api
-      .post(`/profileLike`, data)
+      .post(`/profileLike`, data, {
+        headers: {
+          Authorization: `JWT ${state.token}`,
+        },
+      })
       .then((_res) => {
         setUserLikes(userLikes === likes ? userLikes + 1 : userLikes - 1);
         // console.log(res.data.data);

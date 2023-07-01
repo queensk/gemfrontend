@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom"; // import useLocation
 import Home from "./pages/Home/Home";
 import Notfound from "./pages/404/Notfound";
 import NavBar from "./Components/NavBar/NavBar";
@@ -18,11 +18,16 @@ import { useContext } from "react";
 
 function App() {
   const { state } = useContext(AuthContext);
-  // if (state.user == null) return <Spinner />;
+
+  // if (state.user == null) {
+  //   return <Spinner />;
+  // }
   return (
     <>
       <BrowserRouter>
-        {state.token && <NavBar />}
+        {state.token &&
+          location.pathname !== "/signin" &&
+          location.pathname !== "/signup" && <NavBar />}
         <Routes>
           <Route
             index

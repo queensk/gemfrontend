@@ -1,13 +1,23 @@
-import { Link } from "react-router-dom";
-// import { useNavigate } from "react-router-dom";
+// import { Link, useLocation, Navigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Logo from "../../Components/NavBar/LOGO.svg";
 import "./SignIn.css";
 import api from "../../api/api";
-import { useEffect, useState } from "react";
-// import { AuthContext } from "../../UseContext/UseAuth/UseAuth";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../UseContext/UseAuth/UseAuth";
+import Spinner from "../../Components/Spinner/Spinner";
+import jwtDecode from "jwt-decode";
+
+type DecodedToken = {
+  iat: number;
+  userEmail: string;
+  userID: string;
+  userName: string;
+  exp: number;
+};
 
 const schema = yup.object().shape({
   usernameOrEmail: yup
@@ -23,11 +33,9 @@ const schema = yup.object().shape({
     .required("Password is required"),
 });
 export default function SignInForm() {
-  // const navigate = useNavigate();
-  // const { state } = useContext(AuthContext);
-  // const [token, setToken] = useState(null);
+  const navigate = useNavigate();
+  const { state, dispatch } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
-  // const location = useLocation();
 
   const {
     register,
@@ -46,38 +54,52 @@ export default function SignInForm() {
     api
       .post("/auth/login", signInData)
       .then((res) => {
-        localStorage.setItem("token", res.data.token.split(" ")[1]);
-        console.log(res.data.token.split(" ")[1]);
+        const token = res.data.token.split(" ")[1];
+        localStorage.setItem("token", token);
+        const decodedToken = jwtDecode<DecodedToken>(token);
+        console.log(decodedToken);
+        dispatch({
+          type: "LOGIN",
+          payload: {
+            user: {
+              iat: decodedToken.iat,
+              userEmail: decodedToken.userEmail,
+              userID: decodedToken.userID,
+              userName: decodedToken.userName,
+              exp: decodedToken.exp,
+            },
+            token: token,
+          },
+        });
+        console.log(state.token);
+
+        navigate("/", { replace: true });
       })
       .catch((err) => {
         console.log(err);
       });
+
     setIsLoading(true);
-    // navigate("/");
   };
 
   useEffect(() => {
-    // create a variable to store the timeout id
     let timeoutId: any;
     if (isLoading) {
       timeoutId = setTimeout(() => {
-        console.log("navigating");
         setIsLoading(false);
-        // return <Navigate to="/" state={{ from: location }} />;
-        // return navigate("/");
+        return navigate("/");
       }, 5000);
     }
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [isLoading]); // pass isLoading as a dependency
+  }, [isLoading]);
 
   return (
     <div className="SignIn-container">
       {isLoading ? (
         <div className="loader-container">
-          {/* <ClipLoader color={"#fff"} size={150} /> */}
-          <div>loading</div>
+          <Spinner />
         </div>
       ) : (
         <div className="sign-in-form">
@@ -110,7 +132,8 @@ export default function SignInForm() {
           <div className="right-SingUp-logo">
             <img src={Logo} alt="" />
             <p>
-              Already have an account? <Link to="/signup">Sign Up</Link>
+              Don't have an account?
+              <NavLink to="/signup">Sign Up</NavLink>
             </p>
           </div>
         </div>

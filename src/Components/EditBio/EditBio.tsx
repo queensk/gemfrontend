@@ -7,8 +7,9 @@ import AboutUser from "../AboutUser/AboutUser";
 import api from "../../api/api";
 import storage from "../../config/firebaseconfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import MessagePopUp from "../MessagePopUp/MessagePopUp";
+import { AuthContext } from "../../UseContext/UseAuth/UseAuth";
 
 interface FormData {
   email: string;
@@ -89,6 +90,7 @@ export default function EditBio({ user }: EditBioProps) {
   };
 
   const onSubmit = (data: FormData) => {
+    const { state } = useContext(AuthContext);
     const updatedData = {
       userName: `${data.firstName} ${data.lastName}`,
       email: data.email,
@@ -96,7 +98,11 @@ export default function EditBio({ user }: EditBioProps) {
     };
     console.log(updatedData);
     api
-      .patch(`/users/${user.UserID}`, updatedData)
+      .patch(`/users/${user.UserID}`, updatedData, {
+        headers: {
+          Authorization: `JWT ${state.token}`,
+        },
+      })
       .then((_res) => {
         setMessage("Success Update");
       })

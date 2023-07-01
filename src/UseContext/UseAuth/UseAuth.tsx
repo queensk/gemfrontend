@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useEffect } from "react";
+import React, { createContext, useReducer, useEffect, useState } from "react";
 import { AuthReducer, AuthState, AuthAction } from "./AuthReduce";
 import jwtDecode from "jwt-decode";
 
@@ -29,8 +29,11 @@ type DecodedToken = {
 
 const AuthProvider = (props: AuthProviderProps) => {
   const [state, dispatch] = useReducer(AuthReducer, initialState);
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("token")
+  );
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    setToken(localStorage.getItem("token"));
     if (token) {
       const decodedToken = jwtDecode<DecodedToken>(token);
       const currentTime = Date.now() / 1000;
@@ -54,7 +57,7 @@ const AuthProvider = (props: AuthProviderProps) => {
         });
       }
     }
-  }, [dispatch]);
+  }, [dispatch, token]);
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
       {props.children}

@@ -1,5 +1,5 @@
 import { FunctionComponent, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -23,6 +23,7 @@ const schema = yup.object().shape({
 
 const SignUp: FunctionComponent = () => {
   const { state } = useContext(AuthContext);
+  const navigate = useNavigate();
   if (state.user !== null) {
     window.location.href = "/";
   }
@@ -44,6 +45,7 @@ const SignUp: FunctionComponent = () => {
       .post("/auth/register", userForm)
       .then((res) => {
         console.log(res.data);
+        navigate("/signin", { replace: true });
       })
       .catch((err) => {
         console.log(err);

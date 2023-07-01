@@ -32,9 +32,17 @@ export default function PasswordReset() {
   });
   const onSubmit = (data: any) => {
     api
-      .patch(`/auth/password/reset/${state.user?.userID}`, {
-        password: data.newPassword,
-      })
+      .patch(
+        `/auth/password/reset/${state.user?.userID}`,
+        {
+          password: data.newPassword,
+        },
+        {
+          headers: {
+            Authorization: `JWT ${state.token}`,
+          },
+        }
+      )
       .then((res) => {
         console.log(res.data);
       })

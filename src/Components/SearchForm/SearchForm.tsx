@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import api from "../../api/api";
 import { MessageUserContext } from "../../UseContext/UseMessage/SearchMessageUser";
 import "./SearchForm.css";
+import { AuthContext } from "../../UseContext/UseAuth/UseAuth";
 
 // Define a custom hook to get the current path
 
@@ -35,6 +36,7 @@ const SearchForm: React.FC<SearchFormProps> = () => {
   const [showResults, setShowResults] = useState(false);
 
   const resultsRef = useRef<HTMLDivElement>(null);
+  const { state } = useContext(AuthContext);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -64,7 +66,11 @@ const SearchForm: React.FC<SearchFormProps> = () => {
           name: inputValue,
         };
         api
-          .post("/user/search", filterParam)
+          .post("/user/search", filterParam, {
+            headers: {
+              Authorization: `JWT ${state.token}`,
+            },
+          })
           .then((res) => {
             setResults(res.data.data);
           })

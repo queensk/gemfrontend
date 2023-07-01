@@ -22,7 +22,11 @@ export default function Messages() {
 
   const handleMessages = (user: MessageUser) => {
     api
-      .get(`/message/user/${state.user?.userID}`)
+      .get(`/message/user/${state.user?.userID}`, {
+        headers: {
+          Authorization: `JWT ${state.token}`,
+        },
+      })
       .then((res) => {
         setMessages(
           res.data.data.filter(
@@ -40,7 +44,11 @@ export default function Messages() {
   useEffect(() => {
     if (!messageUser) {
       api
-        .get(`/message/user/${state.user?.userID}/sent`)
+        .get(`/message/user/${state.user?.userID}/sent`, {
+          headers: {
+            Authorization: `JWT ${state.token}`,
+          },
+        })
         .then((res) => {
           setActiveChartUsers(res.data.data);
         })

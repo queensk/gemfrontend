@@ -38,7 +38,11 @@ const AboutUser: FC<AboutUserProps> = ({ user }) => {
     };
 
     api
-      .patch(`/users/${state.user?.userID}`, updateData)
+      .patch(`/users/${state.user?.userID}`, updateData, {
+        headers: {
+          Authorization: `JWT ${state.token}`,
+        },
+      })
       .then((_res) => {
         setMessage("Saved");
       })

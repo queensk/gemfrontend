@@ -15,7 +15,11 @@ export default function Profile() {
 
   const handleGetUser = (userId: string) => {
     api
-      .get(`users/${userId}`)
+      .get(`users/${userId}`, {
+        headers: {
+          Authorization: `JWT ${state.token}`,
+        },
+      })
       .then((res) => {
         setUser(res.data.data[0]);
       })

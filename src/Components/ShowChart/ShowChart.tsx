@@ -42,7 +42,11 @@ export default function ChartThread(props: ChartThreadProps) {
       };
 
       api
-        .post(`/message/user`, data)
+        .post(`/message/user`, data, {
+          headers: {
+            Authorization: `JWT ${state.token}`,
+          },
+        })
         .then((res) => {
           console.log(res.data.data);
         })
